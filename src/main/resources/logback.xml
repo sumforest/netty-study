@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="false">
+    <!-- 定义输出格式 -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>
+                %d{yyyy-MM-dd HH:mm} %-5level %class{36} - %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <appender name="STDOUT_SELF" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>
+                %d{yyyy-MM-dd HH:mm} %-5level %class{36}.%M\(%line\) - %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+    <!-- 设置当前的日志级别和引用对应的输出样式 -->
+    <root level="DEBUG">
+        <appender-ref ref="STDOUT"/>
+    </root>
+
+</configuration>
