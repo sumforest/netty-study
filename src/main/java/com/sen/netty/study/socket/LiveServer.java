@@ -32,7 +32,7 @@ public class LiveServer {
      * @param: []
      * @return: void
      */
-    public void start() {
+    public void start() throws InterruptedException {
         // 创建启动服务器
         ServerBootstrap serverBootstrap = new ServerBootstrap();
         // 创建Nio事件组
@@ -45,14 +45,22 @@ public class LiveServer {
                     protected void initChannel(SocketChannel socketChannel) throws Exception {
                         log.debug("initChannel: {}", socketChannel);
                         // 设置ChannelHandler的容器PipeLine
-                        socketChannel.pipeline();
-//                                .addLast("decoder")
+                        socketChannel.pipeline()
+                                .addLast("decoder", new LiveDecoder())
+                                .addLast("encoder", new LiveEncoder())
+                                .addLast("handler", new LiveHandler());
                     }
                 })
                 // 定义连接队列的大小
                 .option(ChannelOption.SO_BACKLOG, 128)
                 // 启动长连接
-                .childOption(ChannelOption.SO_KEEPALIVE, Boolean.TRUE);
+                .childOption(ChannelOption.SO_KEEPALIVE, Boolean.TRUE)
+                // 绑定端口
+                .bind(port).sync();
+    }
 
+    public static void main(String[] args) throws InterruptedException {
+        // 启动服务端
+        new LiveServer(8080).start();
     }
 }

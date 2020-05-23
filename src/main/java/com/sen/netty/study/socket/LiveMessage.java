@@ -17,6 +17,9 @@ public class LiveMessage {
      */
     public static final byte TYPE_MESSAGE = 2;
 
+    /**
+     * 表示消息的类型，有心跳类型和内容类型
+     */
     private byte type;
 
     private int length;
