@@ -25,6 +25,14 @@ public class LiveHandler extends SimpleChannelInboundHandler<LiveMessage> {
      */
     private static Map<Integer, LiveChannelCache> map = new HashMap<>();
 
+    /**
+     * 处理channel逻辑
+     *
+     * @author: Sen
+     * @date: 2020/5/23 0023 14:13
+     * @param: [ctx, msg]
+     * @return: void
+     */
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, LiveMessage msg) throws Exception {
         // 获取channel
