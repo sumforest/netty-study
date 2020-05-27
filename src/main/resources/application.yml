@@ -1,0 +1,30 @@
+spring:
+  thymeleaf:
+    cache: false
+    prefix: classpath:/templates/
+    suffix: .html
+    encoding: UTF-8
+    content-type: text/html
+
+  redis:
+    host: 47.115.188.91
+    port: 6379
+    password: qhfkj666666.
+    # 连接池中的最大空闲连接
+    pool.max-idle: 8
+    pool.min-idle: 0
+    pool.max-active: 8
+    pool.max-wait: -1
+    timeout: 5000
+    # 使用redis数据库1
+    database: 1
+
+server:
+  port: 8080
+
+netty:
+  tcp.port: 8090
+  boss.thread.count: 2
+  worker.thread.count: 2
+  so.keepalive: true
+  so.backlog: 100
