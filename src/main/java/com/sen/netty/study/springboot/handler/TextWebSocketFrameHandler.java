@@ -9,6 +9,7 @@ import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.util.concurrent.GlobalEventExecutor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -24,13 +25,13 @@ public class TextWebSocketFrameHandler extends SimpleChannelInboundHandler<TextW
 
     public static ChannelGroup channels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 
-    @Resource
+    @Autowired
     private RedisDao redisDao;
 
     /**
      * 定义接收消息的操作
      *
-     * @param ctx 通道处理器山下文
+     * @param ctx 通道处理器上下文
      * @param msg 消息
      */
     @Override
@@ -40,9 +41,9 @@ public class TextWebSocketFrameHandler extends SimpleChannelInboundHandler<TextW
         String userName = redisDao.getString(String.valueOf(incoming.id()));
         for (Channel channel : channels) {
             if (channel != incoming) {
-                channel.writeAndFlush("[" + userName + "] :" + msg.text());
+                channel.writeAndFlush(new TextWebSocketFrame("[" + userName + "] :" + msg.text()+"\n"));
             } else {
-                channel.writeAndFlush("[You] :" + msg.text());
+                channel.writeAndFlush(new TextWebSocketFrame("[You] :" + msg.text()+"\n"));
             }
         }
     }
@@ -59,7 +60,7 @@ public class TextWebSocketFrameHandler extends SimpleChannelInboundHandler<TextW
         String userName = System.currentTimeMillis() + "用户";
         // 通知所有用户有新用户上线
         for (Channel channel : channels) {
-            channel.writeAndFlush(userName + "，上线！");
+            channel.writeAndFlush(userName + "，上线！\n");
         }
         // 保存用户通道
         channels.add(incoming);
@@ -80,7 +81,7 @@ public class TextWebSocketFrameHandler extends SimpleChannelInboundHandler<TextW
         channels.remove(incoming);
         // 通知所有用户有用户离开
         for (Channel channel : channels) {
-            channel.writeAndFlush(userName + "，离开！");
+            channel.writeAndFlush(userName + "，离开！\n");
         }
         // 删除redis中的用户名
         redisDao.deleteString(String.valueOf(incoming.id()));
@@ -94,7 +95,7 @@ public class TextWebSocketFrameHandler extends SimpleChannelInboundHandler<TextW
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
         Channel incoming = ctx.channel();
-        System.out.println(redisDao.getString(String.valueOf(incoming.id())) + ",在线！");
+        System.out.println(redisDao.getString(String.valueOf(incoming.id())) + ",在线！\n");
     }
 
     /**
@@ -105,7 +106,7 @@ public class TextWebSocketFrameHandler extends SimpleChannelInboundHandler<TextW
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
         Channel incoming = ctx.channel();
-        System.out.println(redisDao.getString(String.valueOf(incoming.id())) + ",掉线！");
+        System.out.println(redisDao.getString(String.valueOf(incoming.id())) + ",掉线！\n");
     }
 
     /**

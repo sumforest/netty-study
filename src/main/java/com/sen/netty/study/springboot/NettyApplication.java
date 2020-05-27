@@ -2,7 +2,6 @@ package com.sen.netty.study.springboot;
 
 import com.sen.netty.study.springboot.config.TCPServer;
 import com.sen.netty.study.springboot.handler.NettyWebSocketChannelInitializer;
-import com.sen.netty.study.springboot.handler.TextWebSocketFrameHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -90,10 +89,9 @@ public class NettyApplication {
     }
 
     @Bean
-    public ServerBootstrap ServerBootstrap() {
+    public ServerBootstrap serverBootstrap() {
         ServerBootstrap serverBootstrap = new ServerBootstrap();
-        serverBootstrap.group(bossGroup())
-                .group(workerGroup())
+        serverBootstrap.group(bossGroup(),workerGroup())
                 .channel(NioServerSocketChannel.class)
                 .handler(new LoggingHandler(LogLevel.DEBUG))
                 .childHandler(nettyWebSocketChannelInitializer);
